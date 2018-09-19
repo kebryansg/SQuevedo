@@ -2,7 +2,7 @@ documentos = {
     rows: [
         {id: "SI", descripcion: "Simple"},
         {id: "DE", descripcion: "Desglozado"},
-        {id: "TODES", descripcion: "Totales Desglozado"}
+        {id: "RTOTALESDESGLOSE", descripcion: "Totales Desglozado"}
     ]
 };
 
@@ -31,7 +31,8 @@ $(function () {
             input.type = "hidden";
             input.name = "datos";
             dt = {
-                op: "RTOTALESDESGLOSE",
+                op: "RECAUDXUSUARIO",
+                doc: $("select[name='documentos']").selectpicker("val"),
                 idusuario: idusuario              
             };
             input.value = JSON.stringify($.extend({}, dt, {

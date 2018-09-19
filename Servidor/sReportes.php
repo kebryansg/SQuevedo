@@ -278,6 +278,53 @@ switch ($op) {
                 $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(12, 8, "Fecha  :  " . date('Y-m-d') . "");
                 out_excel("file", $objPHPExcel, $nameDoc);
                 break;
+            case "RTOTALESDESGLOSE":
+                $title = "Reporte de Totales Desglosado";
+                $nameDoc = "Reporte Totales Desglozado";
+                $datos = SAdminDaoImp::_listTotalesDesglo($params);
+                $objPHPExcel = $objReader->load("../files_excel/Documentos/ReporteTotalesDesglosado.xlsx");
+                $objPHPExcel->setActiveSheetIndex(0);
+                $fila = 8;
+                $num_row = 1;
+                $totales = [
+                    "Emision" => 0,
+                    "Mensualidad" => 0,
+                    "Alcantarillado" => 0,
+                    "Mora" => 0,
+                    "Cobranza" => 0
+                ];
+                foreach ($datos as $row) {
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $num_row++);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $row["Fecha"]);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $row["Emision"]);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $row["Mensualidad"]);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $row["Alcantarillado"]);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $row["Mora"]);
+                    $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $row["Cobranza"]);
+
+                    $totales["Emision"] += $row["Emision"];
+                    $totales["Mensualidad"] += $row["Mensualidad"];
+                    $totales["Alcantarillado"] += $row["Alcantarillado"];
+                    $totales["Mora"] += $row["Mora"];
+                    $totales["Cobranza"] += $row["Cobranza"];
+                    $fila++;
+                }
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, $title);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 4, "F. Inicio: " . date_format(date_create($params["inicio"]), 'Y-m-d') . " hasta F. Fin: " . date_format(date_create($params["fin"]), 'Y-m-d'));
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 5, "Fecha Reporte: " . date("Y-m-d"));
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 6, "Usuario - Reporte: " . $user["nombres"]);
+
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, "Totales:");
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $totales["Emision"]);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $totales["Mensualidad"]);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $totales["Alcantarillado"]);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $totales["Mora"]);
+                $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $totales["Cobranza"]);
+
+
+
+                out_excel("file", $objPHPExcel, $nameDoc);
+                break;
         }
         break;
     case "REPORTE.INDIVIDUAL":
@@ -697,60 +744,6 @@ switch ($op) {
         out_excel("file", $objPHPExcel, $nameDoc);
 
 
-        break;
-    case "RTOTALESDESGLOSE":
-        session_start();
-        $user = $_SESSION["login"]["user"];
-        $objReader = new PHPExcel_Reader_Excel2007();
-        $title = "Reporte de Totales Desglosado";
-        $nameDoc = "Reporte Totales Desglozado";
-        $params = array(
-            "inicio" => $datos["fechas"]["inicio"],
-            "fin" => $datos["fechas"]["fin"]
-        );
-        $datos = SAdminDaoImp::_listTotalesDesglo($params);
-        $objPHPExcel = $objReader->load("../files_excel/Documentos/ReporteTotalesDesglosado.xlsx");
-        $objPHPExcel->setActiveSheetIndex(0);
-        $fila = 8;
-        $num_row = 1;
-        $totales = [
-            "Emision" => 0,
-            "Mensualidad" => 0,
-            "Alcantarillado" => 0,
-            "Mora" => 0,
-            "Cobranza" => 0
-        ];
-        foreach ($datos as $row) {
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, $fila, $num_row++);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, $row["Fecha"]);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $row["Emision"]);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $row["Mensualidad"]);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $row["Alcantarillado"]);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $row["Mora"]);
-            $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $row["Cobranza"]);
-
-            $totales["Emision"] += $row["Emision"];
-            $totales["Mensualidad"] += $row["Mensualidad"];
-            $totales["Alcantarillado"] += $row["Alcantarillado"];
-            $totales["Mora"] += $row["Mora"];
-            $totales["Cobranza"] += $row["Cobranza"];
-            $fila++;
-        }
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, $title);
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 4, "F. Inicio: " . date_format(date_create($params["inicio"]), 'Y-m-d') . " hasta F. Fin: " . date_format(date_create($params["fin"]), 'Y-m-d'));
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 5, "Fecha Reporte: " . date("Y-m-d"));
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(0, 6, "Usuario - Reporte: " . $user["nombres"]);
-
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(1, $fila, "Totales:");
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(2, $fila, $totales["Emision"]);
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(3, $fila, $totales["Mensualidad"]);
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(4, $fila, $totales["Alcantarillado"]);
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(5, $fila, $totales["Mora"]);
-        $objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow(6, $fila, $totales["Cobranza"]);
-
-
-
-        out_excel("file", $objPHPExcel, $nameDoc);
         break;
 }
 ?>

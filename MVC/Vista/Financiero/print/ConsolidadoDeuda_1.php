@@ -191,7 +191,9 @@ $user = $_SESSION["login"]["user"];
         };
 
         totalMeses = total = 0;
-        //console.log(rows);
+        console.log(rows);
+        mora = 0; 
+        cobranza = 0;
 
         $.each(rows, function (i, row) {
             div = $("div[example]").clone();
@@ -200,8 +202,7 @@ $user = $_SESSION["login"]["user"];
             row.detalle = JSON.parse(row.detalle);
             items = [];
             subtotal = 0;
-            mora = 0; 
-            cobranza = 0;
+            
             for (clave in row.tb) {
                 // Solo permitidos    
                 if (permiso.indexOf(clave) !== -1) {
@@ -212,8 +213,7 @@ $user = $_SESSION["login"]["user"];
                         total: row.tb[clave]
                     });
                 }
-                mora += row.tb["MO"];
-                cobranza += row.tb["CO"];
+                
 
             }
             items.push({
@@ -224,14 +224,16 @@ $user = $_SESSION["login"]["user"];
                 fecha: `${ formatMonthAbr(row.fini) } - ${ formatMonthAbr(row.ffin) }`,
                 mes: row.mes
             };
+            
+            mora += row.tb.MO;
+            cobranza += row.tb.CO;
 
             $(div).find("table[valores]").bootstrapTable({data: items});
             $(div).find("table[fechas]").bootstrapTable({data: [fechas]});
 
 
             $("div[desglose]").append(div);
-            $("span[mora]").html(`Mora: ${ formatDolarMask(mora) }`);
-            $("span[cobranza]").html(`Cobranza: ${ formatDolarMask(cobranza) }`);
+            
 
             _row = row.tb;
             _row.total = roundNumber(_row.ME + _row.EM + _row.AL + _row.MO + _row.CO, 2);
@@ -239,6 +241,11 @@ $user = $_SESSION["login"]["user"];
             totalMeses += convertFloat(row.mes);
             
         });
+        
+        $("span[mora]").html(`Mora : ${ formatDolarMask(mora) }`);
+            $("span[cobranza]").html(`Cobranza : ${ formatDolarMask(cobranza) }`);
+        
+        
         $("span[total]").html(roundNumber(total, 2));
         $("span[totalMeses]").html(totalMeses);
 

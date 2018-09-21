@@ -191,7 +191,7 @@ $user = $_SESSION["login"]["user"];
         };
 
         totalMeses = total = 0;
-        console.log(rows);
+        //console.log(rows);
         mora = 0; 
         cobranza = 0;
 
@@ -209,7 +209,7 @@ $user = $_SESSION["login"]["user"];
                     subtotal += row.tb[clave];
                     items.push({
                         detalle: detalles[clave],
-                        tarifa: formatDolarMask(row.detalle[clave]),
+                        tarifa: (clave !== "AL" )? formatDolarMask(row.detalle[clave]): formatPorcentVal(row.detalle[clave]),
                         total: row.tb[clave]
                     });
                 }

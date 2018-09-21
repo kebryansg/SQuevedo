@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 require_once __DIR__ . "/../init.php";
 
@@ -11,7 +11,7 @@ $accion = $_POST["accion"];
 $op = strtoupper($_POST["op"]);
 $mapper = new JsonMapper();
 $resultado = "";
-
+session_start();
 switch ($accion) {
     case "list":
         $params = array(
@@ -28,34 +28,34 @@ switch ($accion) {
                 break;
             case "DETALLEGUIASXCONTRIBUYENTE":
                 $params["contribuyente"] = $_POST["idContribuyente"];
-                if(isset($_POST["estado"])){
+                if (isset($_POST["estado"])) {
                     $params["estado"] = $_POST["estado"];
                 }
-                if(is_null($params["buscar"]))
+                if (is_null($params["buscar"]))
                     unset($params["buscar"]);
                 $resultado = json_encode(GuiasDaoImp::_listDetalleGuiasxContribuyente_2($params));
                 break;
-                
-              case "GUIASXCONTRIBUYENTE":
+
+            case "GUIASXCONTRIBUYENTE":
                 $idContribuyente = $_POST["idContribuyente"];
                 $resultado = json_encode(GuiasDaoImp::_listGuiasxContribuyente($idContribuyente));
                 break;
-            
-             case "DETALLEGUIASXCONTRIBUYENTEG":
+
+            case "DETALLEGUIASXCONTRIBUYENTEG":
                 $params["contribuyente"] = $_POST["idContribuyente"];
-                if(isset($_POST["estado"])){
+                if (isset($_POST["estado"])) {
                     $params["estado"] = $_POST["estado"];
                 }
-                if(is_null($params["buscar"]))
+                if (is_null($params["buscar"]))
                     unset($params["buscar"]);
                 $resultado = json_encode(GuiasDaoImp::_listDetalleGuiasxContribuyente_G($params));
                 break;
             case "DETALLEGUIASXCONTRIBUYENTEJC":
                 $params["contribuyente"] = $_POST["idContribuyente"];
-                if(isset($_POST["estado"])){
+                if (isset($_POST["estado"])) {
                     $params["estado"] = $_POST["estado"];
                 }
-                if(is_null($params["buscar"]))
+                if (is_null($params["buscar"]))
                     unset($params["buscar"]);
                 $resultado = json_encode(GuiasDaoImp::_listDetalleGuiasxContribuyente_JC($params));
                 break;
@@ -79,21 +79,19 @@ switch ($accion) {
                 $resultado = json_encode(GuiasDaoImp::_listDetalleGuiasCoactiva($idGuia));
                 break;
             case "AUDITGUIA":
-                $params["guia"]= $_POST["guia"];
+                $params["guia"] = $_POST["guia"];
                 $resultado = json_encode(GuiasDaoImp::_listAuditGuia($params));
                 break;
-             case "DETALLEGUIASXCONTRIBUYENTETODAS":
+            case "DETALLEGUIASXCONTRIBUYENTETODAS":
                 $params["contribuyente"] = $_POST["idContribuyente"];
                 $resultado = json_encode(GuiasDaoImp::_listDetalleGuiasxContribuyenteTodas($params));
                 break;
-            
         }
         break;
     case "save":
         if (array_key_exists("datos", $_POST)) {
             $json = json_decode($_POST["datos"]);
         }
-        session_start();
         $user = $_SESSION["login"]["user"];
         switch ($op) {
             case "CATEGORIA":
@@ -163,7 +161,6 @@ switch ($accion) {
         }
         break;
     case "delete":
-        session_start();
         $user = $_SESSION["login"]["user"];
         switch ($op) {
             case "GUIAS":

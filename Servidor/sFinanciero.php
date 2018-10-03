@@ -223,6 +223,11 @@ switch ($accion) {
                 foreach ($rows as $row) {
                     $detalle = json_decode($row["detalle"], TRUE);
                     $row["tb"] = Calculator::_obtenerPeriodo($detalle, $row["mes"]);
+                    
+                    $DESC = $detalle["DESC"] = 0 ? 1 : 1 - ($detalle["DESC"] / 100);
+                    $detalle["ME"] = $detalle["ME"] * $DESC;
+                    $row["detalle"] = $detalle;
+                    
                     array_unshift($resultado, $row);
                     $cont++;
                 }

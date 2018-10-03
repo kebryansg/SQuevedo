@@ -191,7 +191,7 @@ $user = $_SESSION["login"]["user"];
         };
 
         totalMeses = total = 0;
-        //console.log(rows);
+//        console.log(rows);
         mora = 0; 
         cobranza = 0;
 
@@ -199,7 +199,7 @@ $user = $_SESSION["login"]["user"];
             div = $("div[example]").clone();
             $(div).removeClass("hidden");
             $(div).removeAttr("example");
-            row.detalle = JSON.parse(row.detalle);
+//            row.detalle = JSON.parse(row.detalle);
             items = [];
             subtotal = 0;
             

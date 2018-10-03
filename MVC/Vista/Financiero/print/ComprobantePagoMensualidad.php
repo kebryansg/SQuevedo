@@ -93,6 +93,9 @@
                     <span class="bold">Total: <small total></small> </span>
                 </div>
             </div>
+            <div style="margin-top: 2px; font-size: 12px;">
+                <span class="bold" descripcion_descuento>  </span>
+            </div>
         </div>
         <div class="saltoDePagina"></div>
     </body>
@@ -117,6 +120,7 @@
                 cm: cm_id
             }
         });
+//        console.log(cm);
         $("small[cedula]").html(cm.cedula);
         $("small[fecha]").html(cm.fecha);
         $("small[contribuyente]").html(cm.contribuyente);
@@ -126,8 +130,10 @@
         $("small[direccion]").html(cm.direccion);
         $("small[usuario]").html(cm.usuario);
         $("span[usuario_firma]").html(cm.usuario);
+        if (cm.descripcion_descuento !== null)
+            $("span[descripcion_descuento]").html('* ' + cm.descripcion_descuento);
         subtotal = 0;
-        
+
         if (cm.tipo === "PM") {
             $(".jc").hide();
         }
